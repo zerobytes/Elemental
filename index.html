@@ -16,30 +16,34 @@
 
 		var dropdown = Elemental.new({
 			class:'btn-group',
-			items:[{
-				class: 'btn-group',
-				items: [{
-					class: "btn btn-default dropdown-toggle",
-					type: 'button',
-					id: 'dropdownMenu2',
-					'data-toggle': 'dropdown',
-					'aria-haspopup': 'true',
-					'aria-expanded': 'true',
-					text: 'Drop Up',
-					items: [ { tag: 'span', class: 'caret' } ]
-				},
+			items: [
+				{ class: 'btn btn-default', text: '1' },
+				{ class: 'btn btn-default', text: '2' },
+				{ class: 'btn btn-default', text: 'Test' },
 				{
-					tag: 'ul',
-					class: 'dropdown-menu',
-					'aria-labelledby': 'dropdownMenu2',
-					items: [
-						{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Action' }] },
-						{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Another Action' }] },
-						{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Disabled link' }], class: 'disabled' },
-						{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Something Else' }] },
-						{ tag: 'li', role: 'separator', class: 'divider' },
-						{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Separated link' }] }
-					]
+					class: 'btn-group',
+					items: [{
+						class: "btn btn-default dropdown-toggle",
+						type: 'button',
+						id: 'dropdownMenu2',
+						'data-toggle': 'dropdown',
+						'aria-haspopup': 'true',
+						'aria-expanded': 'true',
+						text: 'Drop Up',
+						items: [ { tag: 'span', class: 'caret' } ]
+					},
+					{
+						tag: 'ul',
+						class: 'dropdown-menu',
+						'aria-labelledby': 'dropdownMenu2',
+						items: [
+							{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Action' }] },
+							{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Another Action' }] },
+							{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Disabled link' }], class: 'disabled' },
+							{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Something Else' }] },
+							{ tag: 'li', role: 'separator', class: 'divider' },
+							{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Separated link' }] }
+						]
 				}]
 			}]
 		});

@@ -2,86 +2,71 @@
 <html>
 <head>
 	<title>Elemental Project</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+
 </head>
 <body>
+	<div class="panel">
+		<div class="panel-body">
+
+		</div>
+	</div>
 	<script src="elemental.js"></script>
 	<script>
 
-		var mycustom = Elemental.new({
-			id: 'test-custom-component',
-			className: 'class-elemental-teste',
-			events: {
-				click: function (event) {
-					console.log('This is the root div');
-					console.log(event, this);
-				}
-			},
+		var dropdown = Elemental.new({
+			class:'btn-group',
 			items: [
+				{ class: 'btn btn-default', text: '1' },
+				{ class: 'btn btn-default', text: '2' },
+				{ class: 'btn btn-default', text: 'Test' },
 				{
-					tag: 'h3',
-					text: 'header teste'
-				},
-				{
-					html: 'label teste'
-				},
-				{
-					name: 'input-1',
-					tag: 'input',
-					on: {
-						focus: function (event) {
-							console.log('This is the first input ');
-							console.log(event, this);
-						},
-						click: function () {
-							console.log("First input clicked");
-						}
-					}
-				},
-				{
-					text: 'a',
+					class: 'btn-group',
 					items: [{
-						text: 'a1',
+						class: "btn btn-default dropdown-toggle",
+						type: 'button',
+						id: 'dropdownMenu2',
+						'data-toggle': 'dropdown',
+						'aria-haspopup': 'true',
+						'aria-expanded': 'true',
+						text: 'Drop Up',
+						items: [ { tag: 'span', class: 'caret' } ]
+					},
+					{
+						tag: 'ul',
+						class: 'dropdown-menu',
+						'aria-labelledby': 'dropdownMenu2',
 						items: [
-							{ tag: 'label', text: 'test' },
-							{ name: 'test', tag: 'input' },
-							{ tag:'label', text: 'test' },
-							{ name: 'test', tag: 'input' }
+							{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Action' }] },
+							{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Another Action' }] },
+							{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Disabled link' }], class: 'disabled' },
+							{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Something Else' }] },
+							{ tag: 'li', role: 'separator', class: 'divider' },
+							{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Separated link' }] }
 						]
-					}]
-				},
-				
-				{
-					text: 'Select box header example 1',
-					items: [
-						{ tag :'label',text: 'Select box label example' },
-						{
-							tag: 'select',
-							events:{
-								change: function () {
-									console.log('This is the select beeing changed');
-									console.log('Changed');
-								}
-							},
-							items: [
-								{ value: 'test1', text: 'Test Value 1' },
-								{ value: 'test2', text: 'Test Value 2' },
-								{ value: 'test3', text: 'Test Value 3' },
-								{ value: 'test4', text: 'Test Value 4' },
-							]
-						}
-					]
-				}
-			]
+				}]
+			}]
 		});
-		mycustom.append({ class:'test',text: 'After added item' }).addClass("test-add-class");
-		mycustom.append({ class:'test',text: 'After added item 2' }).addClass("test-add-class-on-item-2").on('click', function () {
-			alert("click");
-		});
+		Elemental.find('.panel-body').append(dropdown);
 
-		document.body.appendChild(mycustom.get(0))
+		
 
 	</script>
-
-
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </body>
 </html>
+<!--
+<div class="dropup">
+	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		Dropup
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+		<li><a href="#">Action</a></li>
+		<li><a href="#">Another action</a></li>
+		<li><a href="#">Something else here</a></li>
+		<li><a href="#">Separated link</a></li>
+	</ul>
+</div>
+	-->

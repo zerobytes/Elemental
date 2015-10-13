@@ -180,7 +180,7 @@ var Elemental = (function () {
 		//and have all its 'searchable' properties indexed as well
 		//Then here in get it will first search for indexed elements and if it didnt find
 		//it will return a query selector
-		get: function (selector) {
+		find: function (selector) {
 			var return_list=[],query = document.querySelectorAll(selector);
 			for (i = 0; i < query.length; i++) {
 				return_list[return_list.length] = query[i];

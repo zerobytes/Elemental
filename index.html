@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Elemental Project</title>
+</head>
+<body>
+	<script src="elemental.js"></script>
+	<script>
+
+		var mycustom = Elemental.new({
+			id: 'test-custom-component',
+			className: 'class-elemental-teste',
+			events: {
+				click: function (event) {
+					console.log('This is the root div');
+					console.log(event, this);
+				}
+			},
+			items: [
+				{
+					tag: 'h3',
+					text: 'header teste'
+				},
+				{
+					html: 'label teste'
+				},
+				{
+					name: 'input-1',
+					tag: 'input',
+					on: {
+						focus: function (event) {
+							console.log('This is the first input ');
+							console.log(event, this);
+						},
+						click: function () {
+							console.log("First input clicked");
+						}
+					}
+				},
+				{
+					text: 'a',
+					items: [{
+						text: 'a1',
+						items: [
+							{ tag: 'label', text: 'test' },
+							{ name: 'test', tag: 'input' },
+							{ tag:'label', text: 'test' },
+							{ name: 'test', tag: 'input' }
+						]
+					}]
+				},
+				
+				{
+					text: 'Select box header example 1',
+					items: [
+						{ tag :'label',text: 'Select box label example' },
+						{
+							tag: 'select',
+							events:{
+								change: function () {
+									console.log('This is the select beeing changed');
+									console.log('Changed');
+								}
+							},
+							items: [
+								{ value: 'test1', text: 'Test Value 1' },
+								{ value: 'test2', text: 'Test Value 2' },
+								{ value: 'test3', text: 'Test Value 3' },
+								{ value: 'test4', text: 'Test Value 4' },
+							]
+						}
+					]
+				}
+			]
+		});
+		mycustom.append({ class:'test',text: 'After added item' }).addClass("test-add-class");
+		mycustom.append({ class:'test',text: 'After added item 2' }).addClass("test-add-class-on-item-2").on('click', function () {
+			alert("click");
+		});
+
+		document.body.appendChild(mycustom.get(0))
+
+	</script>
+
+
+</body>
+</html>

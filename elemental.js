@@ -9,6 +9,9 @@ var Elemental = (function () {
 			elem[evnt] = func;
 		}
 	}
+	var $element_test = document.createElement('div');
+	var $matches_selector = $element_test.matches || $element_test.webkitMatchesSelector || $element_test.mozMatchesSelector || $element_test.msMatchesSelector;
+
 	var $new = function (list) {
 		list = list instanceof Array ? list : [list];
 		return {
@@ -121,6 +124,7 @@ var Elemental = (function () {
 				return this;
 			},
 			is: function (prop) {
+				prop = prop.replace(':', '');
 				for (i = 0; i < list.length; i++) {
 					switch (prop) {
 						case 'visible':
@@ -132,6 +136,28 @@ var Elemental = (function () {
 					}
 				}
 			},
+			parent: function (selector) {				
+				function collectionHas(a, b) { //helper function (see below)
+					for (var i = 0, len = a.length; i < len; i++) {
+						if (a[i] == b) return true;
+					}
+					return false;
+				}
+				function findParentBySelector(elm, selector) {
+					var all = document.querySelectorAll(selector);
+					var cur = elm.parentElement;
+					while (cur && !collectionHas(all, cur)) { //keep going up until you find a match
+						cur = cur.parentElement; //go up
+					}
+					return cur;
+				}
+				var return_list = [];
+				for (i = 0; i < list.length; i++) {
+					return_list[return_list.length] = (selector == undefined) ? list[i].parentElement : findParentBySelector(list[i], selector);
+				}
+				return $new(return_list);
+			},
+
 			show: function () {
 				for (i = 0; i < list.length; i++) {
 					list[i].style.display = 'block';
@@ -174,21 +200,24 @@ var Elemental = (function () {
 	return {
 		options: {
 			default_tag: 'div'
-		},		
+		},
 		//Todo:
 		//All elements that were created by Elemental should be placed on a index
 		//and have all its 'searchable' properties indexed as well
 		//Then here in get it will first search for indexed elements and if it didnt find
 		//it will return a query selector
 		find: function (selector) {
-			var return_list=[],query = document.querySelectorAll(selector);
+			var return_list = [], query = document.querySelectorAll(selector);
 			for (i = 0; i < query.length; i++) {
 				return_list[return_list.length] = query[i];
 			}
 			return $new(return_list);
 		},
-		new: function (object_custom, parent, forcetag) {
-			var object = object_custom;
+		new: function (object, parent, forcetag) {
+			//this is prob a dom element
+			if (object.nodeName) {
+				return $new(object); 
+			}
 			//If the passed object is an array then it will
 			//iterate those elements configured inside this array 
 			//and append inside the parent object
@@ -210,6 +239,7 @@ var Elemental = (function () {
 				}
 				return elemental_items;
 			}
+			
 			//Sets DEFAULT tag if tag property not set
 			object.tag = (object.tag == undefined ? Elemental.options.default_tag : object.tag).toLowerCase();
 			//creates the dom object
@@ -291,7 +321,7 @@ var Elemental = (function () {
 				}
 
 			}
-			return $new(dom_object, object);
+			return $new(dom_object);
 		}
 	}
 }());

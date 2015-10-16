@@ -11,9 +11,8 @@ var Elemental = (function () {
 	}
 	var $element_test = document.createElement('div');
 	var $matches_selector = $element_test.matches || $element_test.webkitMatchesSelector || $element_test.mozMatchesSelector || $element_test.msMatchesSelector;
-
 	var $new = function (list) {
-		list = list instanceof Array ? list : [list];
+		list = list instanceof Array ? list : ((list == undefined) ? [] : [list]);
 		var $items = {
 			add: function (item) {
 				if (item.get == undefined) {
@@ -32,6 +31,7 @@ var Elemental = (function () {
 				return items_list;
 			}
 		};
+
 		return {
 
 			//Returns dom object
@@ -45,6 +45,7 @@ var Elemental = (function () {
 			find: function (selector) {
 				var return_list = [], query;
 				for (i = 0; i < list.length; i++) {
+					if (!list[i].querySelectorAll) continue;
 					query = list[i].querySelectorAll(selector);
 					for (i = 0; i < query.length ; i++) {
 						return_list[return_list.length] = query[i];
@@ -60,6 +61,12 @@ var Elemental = (function () {
 				return $new($items.add(item));
 			},
 			attr: function (attr, value) {
+				if (attr == undefined) {
+					return list[0].attributes;
+				}
+				if (value == undefined) {
+					return list[0].getAttribute(attr);
+				}
 				if (typeof value == 'boolean') {
 					return this.conditionalAttribute(attr, attr, value);
 				}
@@ -129,23 +136,38 @@ var Elemental = (function () {
 						}
 						return;
 					}
-					if (value == undefined) return list[i].style[property];
+					if (typeof value == 'undefined') return list[i].style[property];
 					list[i].style[property] = value;
 				}
 				return this;
 			},
 			is: function (prop) {
-				prop = prop.replace(':', '');
-				for (i = 0; i < list.length; i++) {
-					switch (prop) {
-						case 'visible':
-							return !(list[i].offsetParent === null);
-							break;
-						default:
-							return list[i].hasAttribute(prop);
-							break;
-					}
+				prop = Elemental.trim(prop);
+				//attribute
+				switch (prop[0]) {
+					case ':':
+						switch (prop) {
+							case ':visible':
+								return !(list[0].offsetParent === null);
+								break;
+						}
+						break;
+					case '[':
+					case '.':
+					case '#':
+						return Elemental.matchSelector(list[0], prop);
+						break;
 				}
+			},
+			//Goes to N levels of parent elements
+			skipout: function (levels) {
+				var return_element = this, level = 0;
+
+				while (return_element && level < levels) {
+					return_element = return_element.parent();
+					level++;
+				}
+				return return_element;
 			},
 			parent: function (selector) {
 				function collectionHas(a, b) { //helper function (see below)
@@ -168,7 +190,54 @@ var Elemental = (function () {
 				}
 				return $new(return_list);
 			},
-
+			focus: function () {
+				if (list[0]) list[0].focus();
+				return this;
+			},
+			blur: function () {
+				if (list[0]) list[0].blur();
+				return this;
+			},
+			next: function (selector) {
+				if (!selector) return $new(list[0].nextElementSibling || list[0].nextSibling);
+				return Elemental.find(selector).index(this.index() + 1);
+			},
+			prev: function (selector) {
+				if (!selector) return $new(list[0].previousElementSibling || list[0].previousSibling);
+				var index = this.index(selector);
+				var element = Elemental.find(selector).index(index - 1);
+				return element ? $new(element) : $new({});
+			},
+			index: function (selector) {
+				if (typeof selector == 'string') {
+					var elements = this.parent().find(selector).get();
+					for (i = 0; i < elements.length; i++) {
+						if (elements[i] == list[0]) return i;
+					}
+					return false;
+				}
+				if (typeof selector == 'number') {
+					return typeof list[selector] != 'undefined' ? list[selector] : false;
+				}
+				var return_list = [],
+					node = list[0].parentNode.firstChild,
+					index = 0;
+				while (node) {
+					if (node == list[0]) return index;
+					index++;
+					node = node.nextElementSibling || node.nextSibling;
+				}
+				return false;
+			},
+			siblings: function () {
+				var return_list = [],
+					node = list[0].parentNode.firstChild;
+				while (node && node.nodeType === 1) {
+					if (node != list[0]) return_list.push(node);
+					node = node.nextElementSibling || node.nextSibling;
+				}
+				return return_list;
+			},
 			show: function () {
 				for (i = 0; i < list.length; i++) {
 					list[i].style.display = 'block';
@@ -189,11 +258,21 @@ var Elemental = (function () {
 				this.show();
 				return this;
 			},
+			remove: function () {
+				for (i = 0; i < list.length; i++) {
+					var p = list[i].parentNode;
+					p.removeChild(list[i]);
+				}
+				return true;
+			},
 			on: function (event, fnCallback) {
 				for (i = 0; i < list.length; i++) {
 					$addEvent(event, list[i], fnCallback);
 				}
 				return this;
+			},
+			size: function () {
+				return list.length;
 			},
 			//Add or remove an attribute accordingly to 'IS' param
 			conditionalAttribute: function (attribute, value, is) {
@@ -205,6 +284,55 @@ var Elemental = (function () {
 					list[i].removeAttribute(attribute);
 				}
 				return this;
+			},
+			each: function (callback, args) {
+				obj = list;
+				var value,
+					i = 0,
+					length = obj.length,
+					isArray = obj instanceof Array;
+
+				if (args) {
+					if (isArray) {
+						for (; i < length; i++) {
+							value = callback.apply(obj[i], args);
+
+							if (value === false) {
+								break;
+							}
+						}
+					} else {
+						for (i in obj) {
+							value = callback.apply(obj[i], args);
+
+							if (value === false) {
+								break;
+							}
+						}
+					}
+
+					// A special, fast, case for the most common use of each
+				} else {
+					if (isArray) {
+						for (; i < length; i++) {
+							value = callback.call(obj[i], i, obj[i]);
+
+							if (value === false) {
+								break;
+							}
+						}
+					} else {
+						for (i in obj) {
+							value = callback.call(obj[i], i, obj[i]);
+
+							if (value === false) {
+								break;
+							}
+						}
+					}
+				}
+
+				return obj;
 			}
 		}
 	};
@@ -212,18 +340,44 @@ var Elemental = (function () {
 		options: {
 			default_tag: 'div'
 		},
+		trim: function (s) {
+			return s.replace(/^\s+|\s+$/gm, '');
+		},
 		//Todo:
 		//All elements that were created by Elemental should be placed on a index
 		//and have all its 'searchable' properties indexed as well
 		//Then here in get it will first search for indexed elements and if it didnt find
 		//it will return a query selector
 		find: function (selector) {
-			var return_list = [], query = document.querySelectorAll(selector);
-			for (i = 0; i < query.length; i++) {
-				return_list[return_list.length] = query[i];
+			var return_list = []
+			var s = selector.split(','), second_selector = [], a;
+			for (i in s) {
+				a = Elemental.trim(s[i]);
+				if (a[0] == '#') {
+					return_list[return_list.length] = document.getElementById(s[i].replace('#', ''));
+					continue;
+				}
+				if (a == '') continue;
+				second_selector[second_selector.length] = a;
+			}
+			if (second_selector.length > 0) {
+				query = document.querySelectorAll(second_selector.join(','));
+				for (i = 0; i < query.length; i++) {
+					return_list[return_list.length] = query[i];
+				}
 			}
 			return $new(return_list);
 		},
+		matchSelector: function (element, selector) {
+			if (element.get) element = element.get(0);
+			var elements_selector = Elemental.find(selector);
+			elements_selector.css("match-selector-test", "match-selector-value");
+			var match = element.style["match-selector-test"] == "match-selector-value";
+			elements_selector.css("match-selector-test", null);
+			return match;
+		},
+		//Creates a new Elemental object based on @object param
+		//@object param can also be a DOM element
 		new: function (object, parent, forcetag) {
 			//this is prob a dom element
 			if (object.nodeName) {
@@ -336,3 +490,6 @@ var Elemental = (function () {
 		}
 	}
 }());
+
+
+

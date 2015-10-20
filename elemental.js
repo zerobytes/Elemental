@@ -33,7 +33,6 @@ var Elemental = (function () {
 		};
 
 		return {
-
 			//Returns dom object
 			get: function (index) {
 				var return_list = [];
@@ -41,6 +40,9 @@ var Elemental = (function () {
 					return_list[return_list.length] = list[i];
 				}
 				return index == undefined ? return_list : return_list[index];
+			},
+			toString:function(){
+				return Elemental.new({}).append(this).get(0).innerHTML;
 			},
 			find: function (selector) {
 				var return_list = [], query;
@@ -160,7 +162,7 @@ var Elemental = (function () {
 				}
 			},
 			//Goes to N levels of parent elements
-			skipout: function (levels) {
+			skipOut: function (levels) {
 				var return_element = this, level = 0;
 
 				while (return_element && level < levels) {

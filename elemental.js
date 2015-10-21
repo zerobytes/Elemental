@@ -62,7 +62,7 @@ var Elemental = (function () {
 				}
 				return $new($items.add(item));
 			},
-			attr: function (attr, value) {
+			attr: function (attr, value) {				
 				if (attr == undefined) {
 					return list[0].attributes;
 				}
@@ -76,6 +76,14 @@ var Elemental = (function () {
 					list[i].setAttribute(attr, value);
 				}
 				return this;
+			},
+			objectAttr: function (attr, value) {
+				if (value == undefined) {
+					return list[0][attr];
+				}
+				for (i = 0; i < list.length; i++) {
+					list[i][attr] = value;
+				}
 			},
 			height: function () {
 				return list[0].clientHeight;
@@ -131,7 +139,7 @@ var Elemental = (function () {
 				return this;
 			},
 			css: function (property, value) {
-				for (i = 0; i < list.length; i++) {
+				for (var i = 0; i < list.length; i++) {
 					if (property instanceof Array) {
 						for (prop in property) {
 							list[i].style[prop] = property[i][prop];
@@ -152,6 +160,12 @@ var Elemental = (function () {
 							case ':visible':
 								return !(list[0].offsetParent === null);
 								break;
+							case ':disabled':
+								return list[0].disabled;
+								break;
+							case ':readonly':
+								return list[0].getAttribute('readonly') != null;
+								break;
 						}
 						break;
 					case '[':
@@ -161,7 +175,7 @@ var Elemental = (function () {
 						break;
 				}
 			},
-			//Goes to N levels of parent elements
+			//Goes to N levels of parent elements 
 			skipOut: function (levels) {
 				var return_element = this, level = 0;
 
@@ -262,6 +276,7 @@ var Elemental = (function () {
 			},
 			remove: function () {
 				for (i = 0; i < list.length; i++) {
+					if (!list[i]) continue;
 					var p = list[i].parentNode;
 					p.removeChild(list[i]);
 				}
@@ -344,6 +359,36 @@ var Elemental = (function () {
 		},
 		trim: function (s) {
 			return s.replace(/^\s+|\s+$/gm, '');
+		},
+		toUnderscore :function(string){
+			return string.replace(/([A-Z])/g, function($1){return "_"+$1.toLowerCase();});
+		},
+		toDash: function (string) {
+			return string.replace(/([A-Z])/g, function($1){return "-"+$1.toLowerCase();});
+		},
+		toCamel :function(){
+			return this.replace(/(\-[a-z])/g, function($1){return $1.toUpperCase().replace('-','');});
+		},
+		message:{
+			apply : function () {
+				var s = arguments[0];
+				for (i = 1; i < arguments.length;i++) {
+					s = s.replace('@?',arguments[i]);
+				}
+				return s;
+			},
+			//Only works with screen readers (e.g. Jaws)
+			talk: function (text,removeTimer) {
+				removeTimer = removeTimer==undefined ? 3000 : removeTimer;
+				Elemental.find("#screen-reader-dynamic-text").remove();
+				var $_current_focus = document.activeElement;
+				var helper = Elemental.new({ id: 'screen-reader-dynamic-text', title: text, tabindex: 0 });
+				document.body.appendChild(helper.get(0));
+				helper.focus();
+				setTimeout(function () {
+					$_current_focus.focus();
+				}, removeTimer);
+			}
 		},
 		//Todo:
 		//All elements that were created by Elemental should be placed on a index
@@ -453,14 +498,6 @@ var Elemental = (function () {
 						}
 						for (a in object[i]) elemental_object.addClass(object[i][a]);
 						break;
-					case 'data':
-					case 'data-attributes':
-					case 'attr':
-					case 'attributes':
-						for (a in object[i]) {
-							//Sets the data string attribute to the new object
-							elemental_object.attr(a, object[i][a]);
-						}
 						break;
 					case 'text':
 					case 'string':
@@ -481,9 +518,20 @@ var Elemental = (function () {
 						if (object[i] == true) elemental_object.attr(i, object[i]);
 						break;
 						//By default it sets attributes on the object
-					default:
-						//Sets the string attribute to the new object
-						elemental_object.attr(i, object[i]);
+					case 'data':
+					case 'data-attributes':
+					case 'attr':
+					case 'attributes':
+						var attr;
+						for (a in object[i]) {
+							attr = Elemental.toDash(attr);
+							//Sets the data string attribute to the new object
+							elemental_object.attr(attr, object[i][a]);
+						}
+						break;
+					default:						
+						//Sets the string attribute to the new object						
+						elemental_object.attr(Elemental.toDash(i),object[i] );
 						break;
 				}
 

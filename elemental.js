@@ -379,7 +379,12 @@ var Elemental = (function () {
 			},
 			//Only works with screen readers (e.g. Jaws)
 			talk: function (text,removeTimer) {
-				removeTimer = removeTimer==undefined ? 3000 : removeTimer;
+				if (removeTimer == undefined) {
+					var a = 3950,//Milli Seconds
+						b = 73,//String Length
+						c = (text.length * a) / b;
+					removeTimer = c + 100;
+				}
 				Elemental.find("#screen-reader-dynamic-text").remove();
 				var $_current_focus = document.activeElement;
 				var helper = Elemental.new({ id: 'screen-reader-dynamic-text', title: text, tabindex: 0 });

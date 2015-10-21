@@ -19,7 +19,17 @@
 			items: [
 				{ class: 'btn btn-default', text: '1' },
 				{ class: 'btn btn-default', text: '2' },
-				{ class: 'btn btn-default', text: 'Test' },
+				{
+					tabindex: 0, title: 'BACK',
+					class: 'btn btn-default', text: 'Test',
+					on: {
+						click: function () {
+							//Elemental.message.talk("Testing my algorthym do have an avarage duration for jaws to say a phrase")
+							//Elemental.message.talk("Testing my algorthym")
+							Elemental.message.talk("Answer Range input 1 has been deleted")
+						}
+					}
+				},
 				{
 					class: 'btn-group', 
 					items: [{
@@ -37,7 +47,13 @@
 						class: 'dropdown-menu',
 						'aria-labelledby': 'dropdownMenu2',
 						items: [
-							{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Action' }] },
+							{
+								tag: 'li', items: [{
+									tabindex:0,title:'BACK',
+									tag: 'a', href: '#', text: 'Say Something using jaws',
+									
+								}]
+							},
 							{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Another Action' }] },
 							{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Disabled link' }], class: 'disabled' },
 							{ tag: 'li', items: [{ tag: 'a', href: '#', text: 'Something Else' }] },

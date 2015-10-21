@@ -506,7 +506,7 @@ var Elemental = (function () {
 						break;
 					case 'tag':
 						break;
-					case 'style':
+					case 'style': 
 					case 'css':
 						for (prop in object[i]) {
 							elemental_object.css(prop, object[i][prop])

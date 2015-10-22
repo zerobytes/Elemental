@@ -82,105 +82,105 @@ Elemental.new({
 })
 ```
 
-
+##Elemental Object Collection Methods
 **get** - Will return the DOM Element Object with the given index (parameter) or the list of all DOM Elements inside of **Elemental Object Collection**
->get: function (index) {
+>get (index)
 
 **toString** - Returns the HTML string of the first DOM element on this collection
 >toString:function(){
 
 **find** - Will search within all the children elements for a given selector returning an **Elemental Object Collection**
->find: function (selector) {
+>find (selector)
 
 **append** - Appends inside the DOM Elements the given item. *item* Can be a DOM Element or an **Elemental Object Collection**
->append: function (item) {
+>append (item)
 
 **attr** - Set an attribute in all DOM Elements inside the collection but gets only from the first. If no param is passed will return a full list of attributes for the first element
->attr: function (attr, value) {				
+>attr (attr, value)				
 
 **objectAttr** - Will set an attribute on each DOM Element Object inside this collection independent if it beeing and html attr or not
->objectAttr: function (attr, value) {
+>objectAttr (attr, value)
 
 **height** - Returns the client height of the first DOM Element of this collection
->height: function () {
+>height ()
 
 **width** - Returns the client width of the first DOM Element of this collection
->width: function () {
+>width ()
 
 **scrollTop** - Returns the scroll top of the first DOM Element of this collection
->scrollTop: function (scroll) {
+>scrollTop (scroll)
 
 **scrollLeft** - Returns the scroll left of the first DOM Element of this collection
->scrollLeft: function (scroll) {
+>scrollLeft (scroll)
 
 **hasClass** - Check if an element (with index, if given) has a given class. If no index is passed will check only the first
->hasClass: function (className, index) {
+>hasClass (className, index)
 
 **addClass** - Add a given class to all DOM Elements inside collection
->addClass: function (className) {
+>addClass (className)
 
 **removeClass** - Removes a given class from all DOM Elements inside the collection
->removeClass: function (className) {
+>removeClass (className)
 
 **toggleClass** - Adds or Removes a given class from all DOM Elements inside the collection
->toggleClass: function (className) {
+>toggleClass (className)
 
 **css** - Set or get a CSS property on all DOM Elements inside the collection. 
 It is possible to pass an object on first argument with property=>value to set multiple css rules.
->css: function (property, value) {
+>css (property, value)
 
 **is** - check if the first DOM Element inside the collection matches the given selector
 Will support (individually) *:visible, :disabled* and *:readonly* and all common css selectors with multiple use
->is: function (prop) 
+>is (prop) 
 ######Example
 ```
 Elemental.find("input").is("[type=text], .form-control")
 ```
 
 **skipOut** - Will return the element that matches the hierarchy with N levels above the first DOM Element inside collection
->skipOut: function (levels) {
+>skipOut (levels)
 
 **parent** - Will return the parent node of the first DOM Element inside the collection, with a given selector (if passed)
->parent: function (selector) {
+>parent (selector)
 
 **focus** - Will focus on the first DOM Element inside the collection
->focus: function () {
+>focus ()
 
 **blur** - Will blur from the first DOM Element inside the collection
->blur: function () 
+>blur () 
 
 **next** - Will jump to the next sibling DOM Element. If a selector is passed than it will jump to the next DOM Element that matches the given selector
->next: function (selector) 
+>next (selector) 
 
 **prev** - Will jump to the previous sibling DOM Element. If a selector is passed than it will jump to the previous DOM Element that matches the given selector
->prev: function (selector) 
+>prev (selector) 
 
 **index** - Returns the index of the first DOM Element. If a selector is passed the index will be based on the given selector
->index: function (selector) 
+>index (selector) 
 
 **siblings** - Return all siblings of the first  DOM Element inside the collection
->siblings: function () 
+>siblings () 
 
 **show** - Display all the DOM Elements inside the collection
->show: function () 
+>show () 
 
 **hide** - Hide all the DOM Elements inside the collection
->hide: function () 
+>hide () 
 
 **toggle** - Display or Hide all the DOM Elements inside the collection
->toggle: function () 
+>toggle () 
 
 **remove** - Remove all the DOM Elements inside the collection from javascript DOM tree
->remove: function () 
+>remove () 
 
 **on** - Binds an event to all DOM Elements inside the collection
->on: function (event, fnCallback) 
+>on (event, fnCallback) 
 
 **size** - Returns the count of items inside the collection
->size: function () 
+>size () 
 
 **conditionalAttribute** - Sets a conditional attribute to all DOM Elements inside the collection
 >conditionalAttribute: 
 
 **each** - Iterates thru all items inside the Collection executing a *callback* function
->each: function (callback, args) 
+>each (callback, args) 

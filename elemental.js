@@ -1,7 +1,7 @@
 var Elemental = (function () {
 	function $addEvent(evnt, elem, func) {
 		if (elem.addEventListener)  // W3C DOM
-			elem.addEventListener(evnt, func, false);
+			elem.addEventListener(evnt, func, true);
 		else if (elem.attachEvent) { // IE DOM
 			elem.attachEvent("on" + evnt, func);
 		}
@@ -366,8 +366,8 @@ var Elemental = (function () {
 		toDash: function (string) {
 			return string.replace(/([A-Z])/g, function($1){return "-"+$1.toLowerCase();});
 		},
-		toCamel :function(){
-			return this.replace(/(\-[a-z])/g, function($1){return $1.toUpperCase().replace('-','');});
+		toCamel :function(string){
+			return string.replace(/(\-[a-z])/g, function ($1) { return $1.toUpperCase().replace('-', ''); });
 		},
 		message:{
 			apply : function () {
@@ -387,11 +387,12 @@ var Elemental = (function () {
 				}
 				Elemental.find("#screen-reader-dynamic-text").remove();
 				var $_current_focus = document.activeElement;
-				var helper = Elemental.new({ id: 'screen-reader-dynamic-text', title: text, tabindex: 0 });
+				var helper = Elemental.new({ id: 'screen-reader-dynamic-text', title: text, tabindex: 0,role:'alert' });
 				document.body.appendChild(helper.get(0));
 				helper.focus();
 				setTimeout(function () {
 					$_current_focus.focus();
+					Elemental.find("#screen-reader-dynamic-text").remove();
 				}, removeTimer);
 			}
 		},

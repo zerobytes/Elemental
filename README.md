@@ -49,7 +49,7 @@ characters.
 **matchSelector** - Will check if a given element matches a given selector
 >Elemental.matchSelector(element, selector) 
 
-**new** - Will create a **Elemental object collection** based on first argument
+**new** - Will create a new **Elemental object collection** based on first argument
 >Elemental.new(object, **optional** parent, **optional** forcetag)
 ######Example
 ```
